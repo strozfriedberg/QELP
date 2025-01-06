@@ -27,4 +27,4 @@ For example, if `C:\ESXi_input_dir` contains an archive named `ESXi_test_log.tgz
 
 Copyright
 ================
-Copyright 2024, Aon. QELP is licensed under the Apache License, Version 2.0.
+Copyright 2025, Aon. QELP is licensed under the Apache License, Version 2.0.
