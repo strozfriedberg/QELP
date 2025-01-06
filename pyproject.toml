@@ -1,7 +1,7 @@
 [project]
 name = "qelp"
 version = "0.1.0"
-description = "QELP (Quick ESXi Log Parser) is a Python tool parses ESXi logs."
+description = "QELP (Quick ESXi Log Parser) is a Python tool that parses ESXi logs."
 authors = []
 dependencies = [
     "art>=6.2"
