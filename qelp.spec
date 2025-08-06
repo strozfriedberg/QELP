@@ -47,6 +47,26 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
 )
+# Onefile executable (uncomment for single-file build)
+# exe_onefile = EXE(
+#     pyz,
+#     a.scripts,
+#     a.binaries,
+#     a.datas,
+#     name='qelp',
+#     debug=False,
+#     bootloader_ignore_signals=False,
+#     strip=True,
+#     upx=True,
+#     console=True,
+#     disable_windowed_traceback=False,
+#     argv_emulation=False,
+#     target_arch=None,
+#     codesign_identity=None,
+#     entitlements_file=None,
+# )
+
+# Onedir executable (default)
 coll = COLLECT(
     exe,
     a.binaries,

@@ -20,19 +20,36 @@ logger = logging.getLogger(__name__)
 def find_executable():
     """Find the QELP executable in dist directory."""
     project_root = Path(__file__).parent.parent
+    dist_dir = project_root / "dist"
     
+    if not dist_dir.exists():
+        return None
+    
+    # Look for platform-specific builds first (new naming scheme)
+    for item in dist_dir.iterdir():
+        if item.name.startswith("qelp-v"):
+            if item.is_dir():
+                # Onedir build: look for qelp executable inside
+                exe_path = item / "qelp"
+                if exe_path.exists():
+                    return exe_path
+            elif item.is_file():
+                # Onefile build
+                return item
+    
+    # Fallback to legacy naming for backwards compatibility
     # Check for onedir build
-    onedir_exe = project_root / "dist" / "qelp" / "qelp"
+    onedir_exe = dist_dir / "qelp" / "qelp"
     if onedir_exe.exists():
         return onedir_exe
     
     # Check for onefile build
-    onefile_exe = project_root / "dist" / "qelp"
+    onefile_exe = dist_dir / "qelp"
     if onefile_exe.exists():
         return onefile_exe
     
     # Check for Windows executable
-    win_exe = project_root / "dist" / "qelp.exe"
+    win_exe = dist_dir / "qelp.exe"
     if win_exe.exists():
         return win_exe
     

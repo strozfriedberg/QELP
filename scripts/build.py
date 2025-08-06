@@ -10,6 +10,8 @@ import logging
 import argparse
 import subprocess
 import shutil
+import platform
+import toml
 from pathlib import Path
 
 # Configure logging
@@ -37,6 +39,48 @@ def setup_paths():
         sys.exit(1)
     
     return project_root, src_path, spec_onedir, spec_onefile
+
+
+def get_project_version(project_root):
+    """Extract version from pyproject.toml."""
+    try:
+        pyproject_path = project_root / "pyproject.toml"
+        if not pyproject_path.exists():
+            logger.warning("pyproject.toml not found, using version 'unknown'")
+            return "unknown"
+        
+        with open(pyproject_path) as f:
+            data = toml.load(f)
+        
+        version = data.get("project", {}).get("version", "unknown")
+        logger.info(f"Project version: {version}")
+        return version
+    except Exception as e:
+        logger.warning(f"Could not extract version: {e}")
+        return "unknown"
+
+
+def get_platform_info():
+    """Get platform-specific information for executable naming."""
+    system = platform.system().lower()
+    machine = platform.machine().lower()
+    
+    # Normalize architecture names
+    if machine in ['x86_64', 'amd64']:
+        machine = 'x64'
+    elif machine in ['aarch64', 'arm64']:
+        machine = 'arm64'
+    elif machine.startswith('arm'):
+        machine = 'arm'
+    
+    # Create platform string
+    platform_str = f"{system}-{machine}"
+    
+    # Windows executable extension
+    exe_ext = ".exe" if system == "windows" else ""
+    
+    logger.info(f"Platform: {platform_str}")
+    return platform_str, exe_ext
 
 
 def check_uv_environment():
@@ -68,11 +112,15 @@ def clean_build_artifacts(project_root):
                 logger.warning(f"Could not remove {artifact}: {e}")
 
 
-def run_pyinstaller(spec_path):
+def run_pyinstaller(spec_path, project_root):
     """Run PyInstaller with error handling and progress reporting."""
     spec_name = spec_path.name
     build_type = "onefile" if "onefile" in spec_name else "onedir"
     logger.info(f"Building {build_type} executable using {spec_name}")
+    
+    # Get version and platform info
+    version = get_project_version(project_root)
+    platform_str, exe_ext = get_platform_info()
     
     cmd = ["pyinstaller", str(spec_path)]
     
@@ -90,6 +138,25 @@ def run_pyinstaller(spec_path):
             logger.error(result.stderr)
             return False
         
+        # Rename executable with version and platform info
+        dist_dir = project_root / "dist"
+        if build_type == "onefile":
+            old_exe = dist_dir / f"qelp{exe_ext}"
+            new_exe = dist_dir / f"qelp-v{version}-{platform_str}{exe_ext}"
+        else:
+            old_dir = dist_dir / "qelp"
+            new_dir = dist_dir / f"qelp-v{version}-{platform_str}"
+            
+        try:
+            if build_type == "onefile" and old_exe.exists():
+                old_exe.rename(new_exe)
+                logger.info(f"✓ Executable renamed to: {new_exe.name}")
+            elif build_type == "onedir" and old_dir.exists():
+                old_dir.rename(new_dir)
+                logger.info(f"✓ Directory renamed to: {new_dir.name}")
+        except Exception as e:
+            logger.warning(f"Could not rename executable: {e}")
+        
         logger.info("✓ Build completed successfully")
         return True
         
@@ -103,12 +170,12 @@ def run_pyinstaller(spec_path):
 
 def build_onedir(project_root, spec_onedir, spec_onefile):
     """Build onedir (directory) executable."""
-    return run_pyinstaller(spec_onedir)
+    return run_pyinstaller(spec_onedir, project_root)
 
 
 def build_onefile(project_root, spec_onedir, spec_onefile):
     """Build onefile (single executable) executable."""
-    return run_pyinstaller(spec_onefile)
+    return run_pyinstaller(spec_onefile, project_root)
 
 
 def main():
@@ -169,7 +236,11 @@ def main():
     
     if success:
         logger.info("🎉 Build completed successfully!")
+        # Show platform-specific information
+        version = get_project_version(project_root)
+        platform_str, _ = get_platform_info()
         logger.info(f"Executable available in: {project_root / 'dist'}")
+        logger.info(f"Build: qelp-v{version}-{platform_str} ({build_mode})")
         return 0
     else:
         logger.error("❌ Build failed")

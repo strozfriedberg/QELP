@@ -15,6 +15,7 @@ dev = [
     "pytest-watcher>=0.4.2",
     "pytest-mock>=3.14.0",
     "pyinstaller>=6.0",
+    "toml>=0.10.0",
 ]
 
 [build-system]
