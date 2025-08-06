@@ -176,5 +176,17 @@ def main():
         return 1
 
 
+def main_onefile():
+    """Entry point for onefile build command."""
+    sys.argv = [sys.argv[0], '--clean', '--onefile']
+    return main()
+
+
+def main_onedir():
+    """Entry point for onedir build command."""
+    sys.argv = [sys.argv[0], '--clean']
+    return main()
+
+
 if __name__ == "__main__":
     sys.exit(main())
