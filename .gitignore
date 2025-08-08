@@ -43,3 +43,11 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Output directories (user data, not committed)
+output/
+output*/
+
+# Test files
+test_*.csv
+uv_plan.md

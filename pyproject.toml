@@ -14,6 +14,9 @@ dev = [
     "pytest>=8.2.2",
     "pytest-watcher>=0.4.2",
     "pytest-mock>=3.14.0",
+    "pyinstaller>=6.0",
+    "toml>=0.10.0",
+    "psutil>=5.0.0",
 ]
 
 [build-system]
@@ -24,7 +27,12 @@ build-backend = "hatchling.build"
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/qelp"]
+packages = ["src/qelp", "scripts"]
 
 [project.scripts]
 qelp = 'qelp.esxi_to_csv:main'
+build-exe = 'scripts.build:main_onedir'
+build-onefile = 'scripts.build:main_onefile' 
+test-exe = 'scripts.test_executable:main'
+validate-build = 'scripts.validate_build:main'
+clean-build = 'scripts.clean_build:main'
