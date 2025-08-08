@@ -1,0 +1,83 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+QELP (Quick ESXi Log Parser) is a Python tool that parses ESXi logs and produces CSV reports in a timeline format. It processes ESXi support bundles or log archives (zip, tar, gz, tgz) and extracts relevant security events from various log types.
+
+## Development Commands
+
+### Package Management (UV)
+- `uv sync` - Install dependencies and sync the environment
+- `uv sync --group dev` - Install with development dependencies
+- `uv lock` - Update lockfile dependencies
+- `uv run qelp <input_dir> <output_dir>` - Run the main application
+- `uv add <package>` - Add new runtime dependency
+- `uv add --group dev <package>` - Add development dependency
+- `uv remove <package>` - Remove dependency
+
+### Testing
+- `uv run pytest` - Run all tests
+- `uv run pytest tests/test_support.py` - Run specific test file
+- `uv run pytest -v` - Run tests with verbose output
+
+### Development Dependencies
+- `pytest` - Testing framework
+- `pytest-mock` - Mock support for tests
+- `pytest-watcher` - File watching for continuous testing
+
+## Architecture Overview
+
+### Core Components
+
+1. **esxi_to_csv.py** - Main entry point and log pattern definitions
+   - Contains `LOG_IDENTIFIERS` list defining patterns for different ESXi log types
+   - `main()` function orchestrates the entire parsing process
+   - Defines regex patterns for hostd, syslog, shell, auth, vmauthd, vmkernel, vobd, and rhttpproxy logs
+
+2. **support.py** - Core processing classes
+   - `ArchiveExtractor` - Handles extraction of various archive formats
+   - `FileWrapper` - Provides unified interface for reading plain/gzipped files
+   - `Parser` - Main parsing engine using pattern matching and threading
+   - `Timeliner` - Creates chronological timeline of security events
+   - `Configure` - CLI argument parsing and validation
+
+3. **local_logger.py** - Simple logging configuration
+
+### Key Data Structures
+
+- `LogIdentifier` - namedtuple defining filename patterns and content patterns for each log type
+- `ContentPattern` - namedtuple containing regex and access types
+- `AccessType` - namedtuple defining access type names and description handlers
+- `DescriptionHandler` - namedtuple controlling timeline inclusion and pattern matching
+
+### Processing Flow
+
+1. Extract archives using `ArchiveExtractor`
+2. Identify log files by filename patterns
+3. Parse logs using multithreaded pattern matching
+4. Generate individual CSV files per log type
+5. Create consolidated timeline CSV with chronologically sorted events
+
+### Pattern Matching System
+
+The tool uses a sophisticated pattern matching system that:
+- Identifies log types by filename patterns
+- Applies specific regex patterns to extract structured data
+- Categorizes events by access types (Logon, User_activity, Remote_access, etc.)
+- Determines timeline inclusion based on security relevance
+
+## Testing Structure
+
+Tests are organized in `tests/` directory:
+- `test_support.py` - Unit tests for core classes
+- Uses unittest framework with mock objects
+- Tests archive extraction, file processing, and CSV generation
+
+## Configuration
+
+- Entry point defined in `pyproject.toml` as `qelp = 'qelp.esxi_to_csv:main'`
+- Dependencies managed through UV with locked versions
+- Supports Python >= 3.8
+- Uses `art` library for ASCII banner display
