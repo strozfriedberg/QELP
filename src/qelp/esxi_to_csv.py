@@ -23,11 +23,11 @@ DescriptionHandler = namedtuple(
 LOG_IDENTIFIERS = [
     LogIdentifier(
         "hostd",
-        r"^hostd\.(log|\d.gz|log\..*?)$",
+        r"^hostd\.(log|\d+.gz|log\..*?)$",
         [
             ContentPattern(
                 re.compile(
-                    r"(?i)(?P<Timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*?Z) (?P<Log_Level>\w+) (?P<Event_ID>hostd\[\d{0,9}\]) (?P<Event_Type_ID>\[.*?\].*?:|\[.*?\]) (?P<Description>.*)"
+                    r"(?i)(?P<Timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*?Z) (?P<Log_Level>\w+\(.*?\)|\w+) (?P<Event_ID>hostd\[\d{0,9}\])[: ](?P<Event_Type_ID>.*?)(?=:\s*)(:\s*(?P<Description>.*))"
                 ),
                 [
                     AccessType(
@@ -66,11 +66,11 @@ LOG_IDENTIFIERS = [
     ),
     LogIdentifier(
         "syslog",
-        r"^syslog\.(log|\d.gz|log\..*?)$",
+        r"^syslog\.(log|\d+.gz|log\..*?)$",
         [
             ContentPattern(
                 re.compile(
-                    r"(?i)(?P<Timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*?Z) (?P<Logon_Type>sftp-server.*:|DCUI.*:) (?P<Description>.*)"
+                    r"(?i)(?P<Timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*?Z)( \w+\(.*?\) | )(?P<Logon_Type>sftp-server.*?|DCUI.*?)(?=:\s*)(:\s*(?P<Description>.*))"
                 ),
                 [
                      AccessType(
@@ -108,11 +108,11 @@ LOG_IDENTIFIERS = [
     ),
     LogIdentifier(
         "shell",
-        r"^shell\.(log|\d.gz|log\..*?)$",
+        r"^shell\.(log|\d+.gz|log\..*?)$",
         [
             ContentPattern(
                 re.compile(
-                    r"(?i)(?P<Timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*?Z) (?P<Logon_Type>[a-zA-Z].*:) (?P<Description>.*)"
+                    r"(?i)(?P<Timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*?Z)( \w+\(.*?\) | )(?P<Logon_Type>[a-zA-Z].*?)(?=:\s*)(:\s*(?P<Description>.*))"
                 ),
                 [
                     AccessType(
@@ -127,11 +127,11 @@ LOG_IDENTIFIERS = [
     ),
     LogIdentifier(
         "auth",
-        r"^auth\.(log|\d.gz|log\..*?)$",
+        r"^auth\.(log|\d+.gz|log\..*?)$",
         [
             ContentPattern(
                 re.compile(
-                    r"(?i)(?P<Timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*?Z) (?P<Logon_ID>[a-zA-Z].*:) (?P<Description>.*)"
+                    r"(?i)(?P<Timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*?Z)( \w+\(.*?\) | )(?P<Logon_ID>\w+\[\d+\]):(?:.*?:)*\s*(?P<Description>.*)"
                 ),
                 [
                     AccessType(
@@ -171,11 +171,11 @@ LOG_IDENTIFIERS = [
     ),
     LogIdentifier(
         "vmauthd",
-        r"^vmauthd\.(log|\d.gz|log\..*?)$",
+        r"^vmauthd\.(log|\d+.gz|log\..*?)$",
         [
             ContentPattern(
                 re.compile(
-                    r"(?i)(?P<Timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*?Z) (?P<Logon_ID>vmauthd.*:) (?P<Description>.*)"
+                    r"(?i)(?P<Timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*?Z)( \w+\(.*?\) | |: )(?P<Logon_ID>vmauthd.*?)(?=:\s*)(:\s*(?P<Description>.*))"
                 ),
                 [
                     AccessType(
@@ -193,7 +193,7 @@ LOG_IDENTIFIERS = [
     ),
     LogIdentifier(
         "vmkernel",
-        r"^vmkernel\.(log|\d.gz|log\..*?)$",
+        r"^vmkernel\.(log|\d+.gz|log\..*?)$",
         [
             ContentPattern(
                 re.compile(
@@ -221,11 +221,11 @@ LOG_IDENTIFIERS = [
     ),
     LogIdentifier(
         "vobd",
-        r"^vobd\.(log|\d.gz|log\..*?)$",
+        r"^vobd\.(log|\d+.gz|log\..*?)$",
         [
             ContentPattern(
                 re.compile(
-                    r"(?i)(?P<Timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*?Z)\: (?P<Type>\[.*?\]) (?P<ID>\d+.*?\:) (?P<Description_Type>\[.*?\]) (?P<Description>.*)"
+                    r"(?i)(?P<Timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*?Z)( \w+\(.*?\) vobd\[.*?\]:  |: )(?P<Type>\[.*?\]) (?P<ID>\d+.*?)(?=:\s*)(:\s*(?P<Description_Type>\[.*?\])) (?P<Description>.*)"
                 ),
                 [
                     AccessType(
@@ -234,7 +234,7 @@ LOG_IDENTIFIERS = [
                             DescriptionHandler(
                                 True,
                                 re.compile(
-                                    r"(SSH session was.*|SSH access has been.*|Authentication of user.* has.*)",
+                                    r"(SSH session was.*|Authentication of user.* has.*)",
                                 re.IGNORECASE,
                                 ),
                                 
@@ -247,7 +247,7 @@ LOG_IDENTIFIERS = [
                             DescriptionHandler(
                                 True,
                                 re.compile(
-                                    r"(The ESX command line shell has been.*|Administrator access to the host has been.*|Login password for user.*)",
+                                    r"(The ESX command line shell has been.*|Administrator access to the host has been.*|Login password for user.*|SSH access has been.*)",
                                 re.IGNORECASE,
                                 ),
                             ),
@@ -258,8 +258,27 @@ LOG_IDENTIFIERS = [
         ],
     ),
     LogIdentifier(
+        "esxcli",
+        r"^esxcli\.(log|\d+.gz|log\..*?)$",
+        [
+            ContentPattern(
+                re.compile(
+                    r"(?i)(?P<Timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*?Z) (?P<Log_Level>\w+\(.*?\)|\w+|\w+\(.*?\)\[.*?\]) (esxcli\[.*?\]: |esxcli\[.*?\] |esxcli\[.*?\]:\s\s)(?P<Type>[^:]+):\s*(?P<Description>.*)"
+                ),
+                [
+                    AccessType(
+                        "User_activity",
+                        [
+                            DescriptionHandler(True, re.compile(r".*")),
+                        ],
+                    ),
+                ]
+            ),
+        ],
+    ),
+    LogIdentifier(
         "rhttpproxy",
-        r"^rhttpproxy\.(log|\d.gz|log\..*?)$",
+        r"^rhttpproxy\.(log|\d+.gz|log\..*?)$",
         [
             ContentPattern(
                 re.compile(
