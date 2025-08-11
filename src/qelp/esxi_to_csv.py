@@ -350,8 +350,6 @@ def check_extract_and_parse_archives(
             ):
                 parser = Parser(extraction_dir, LOG_IDENTIFIERS)
                 parser.read_parse_logs()
-                parser.create_logon_analysis()
-
 
 
 def main():
