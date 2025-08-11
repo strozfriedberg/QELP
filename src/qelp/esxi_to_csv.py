@@ -6,7 +6,6 @@ import re
 from qelp.local_logger import logger
 from qelp.support import ArchiveExtractor, Configure, Parser
 
-
 LogIdentifier = namedtuple(
     "LogIdentifier", ["filename_start", "filename_pattern", "content_patterns"]
 )
@@ -36,7 +35,19 @@ LOG_IDENTIFIERS = [
                             DescriptionHandler(
                                 True,
                                 re.compile(
-                                    r"(SSH access has been.*|Accepted password for user.*|User .*\@\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}.*|SSH session was.*)",
+                                    r"(Accepted password for user.*|User .*\@\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} logged in.*|SSH session was opened.*)",
+                                re.IGNORECASE,
+                                ),
+                            ),
+                        ],
+                    ),
+                    AccessType(
+                        "Logoff",
+                        [
+                            DescriptionHandler(
+                                True,
+                                re.compile(
+                                    r"(User .*\@\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} logged out.*|SSH session was closed.*)",
                                 re.IGNORECASE,
                                 ),
                             ),
@@ -48,7 +59,7 @@ LOG_IDENTIFIERS = [
                             DescriptionHandler(
                                 True,
                                 re.compile(
-                                    r"(Account.* was created|Got HTTP.*|File upload to path.*|File download from path.*|The ESXi command line shell.*|file delete.*|Deletion of file or directory.*|DatastoreBrowserImpl::SearchInt.*dsPath:.*|Create requested for.*|Login password for user.* has been changed|Password was changed for account.*)",
+                                    r"(SSH access has been.*|Account.* was created|Got HTTP.*|File upload to path.*|File download from path.*|The ESXi command line shell.*|file delete.*|Deletion of file or directory.*|DatastoreBrowserImpl::SearchInt.*dsPath:.*|Create requested for.*|Login password for user.* has been changed|Password was changed for account.*)",
                                 re.IGNORECASE,
                                 ),
                             ),
@@ -78,14 +89,27 @@ LOG_IDENTIFIERS = [
                         [
                             DescriptionHandler(
                                 True,
-                                re.compile(r"User [a-zA-Z0-9].* logged.*"),
+                                re.compile(r"User [a-zA-Z0-9].* logged in.*?"),
                             ),
                             DescriptionHandler(
                                 False,
-                                re.compile(r"(session.*)"),
+                                re.compile(r"(session opened.*)"),
                             ),
                         ],
-                    ),                
+                    ),
+                     AccessType(
+                        "Logoff",
+                        [
+                            DescriptionHandler(
+                                True,
+                                re.compile(r"User [a-zA-Z0-9].* logged out.*?"),
+                            ),
+                            DescriptionHandler(
+                                False,
+                                re.compile(r"(session closed.*)"),
+                            ),
+                        ],
+                    ),                    
                     AccessType(
                         "User_activity",
                         [
@@ -234,7 +258,20 @@ LOG_IDENTIFIERS = [
                             DescriptionHandler(
                                 True,
                                 re.compile(
-                                    r"(SSH session was.*|Authentication of user.* has.*)",
+                                    r"(SSH session was opened.*|Authentication of user.* has.*)",
+                                re.IGNORECASE,
+                                ),
+                                
+                            ),
+                        ],
+                    ),
+                    AccessType(
+                        "Logoff",
+                        [
+                            DescriptionHandler(
+                                True,
+                                re.compile(
+                                    r"(SSH session was closed.*|Authentication of user.* has.*)",
                                 re.IGNORECASE,
                                 ),
                                 
@@ -313,6 +350,8 @@ def check_extract_and_parse_archives(
             ):
                 parser = Parser(extraction_dir, LOG_IDENTIFIERS)
                 parser.read_parse_logs()
+                parser.create_logon_analysis()
+
 
 
 def main():
