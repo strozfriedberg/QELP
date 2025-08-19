@@ -252,12 +252,14 @@ class Configure:
     @staticmethod
     def path(possible_file: str) -> Path:
         return Path(possible_file)
-
+        
     def configure_cli_arguments(self):
-        ascii_art = art.text2art("ESXi_L2C", space=1)
+        ascii_art_main = art.text2art("QELP",chr_ignore=True, space=1)
+        ascii_art_sub = art.text2art("- by Stroz Friedberg",font="slant")
+        ascii_art = f"{Fore.CYAN}{ascii_art_main}\n{Fore.CYAN}{ascii_art_sub}"
         parser = argparse.ArgumentParser(
             formatter_class=argparse.RawDescriptionHelpFormatter,
-            description=f"{ascii_art}\nESXi Logs-to-CSV parses triage data from ESXi hosts",
+            description=f"{ascii_art}\nQuick ESXi Log Parser parses ESXi logs & produces results in csv format",
         )
         parser.add_argument(
             "input_dir",
