@@ -1,6 +1,7 @@
 import csv
 from datetime import datetime
 import os
+import sys
 import re
 import zipfile
 import tarfile
@@ -258,9 +259,9 @@ class Configure:
         ascii_art_main = art.text2art("QELP",chr_ignore=True, space=1)
         ascii_art_sub = art.text2art("- by Stroz Friedberg",font="slant")
         ascii_art = f"{Fore.CYAN}{ascii_art_main}\n{Fore.CYAN}{ascii_art_sub}"
-        print(ascii_art)
-        print()
-        
+        if '-h' not in sys.argv and '--help' not in sys.argv:
+            print(ascii_art)
+            print()
         parser = argparse.ArgumentParser(
             formatter_class=argparse.RawDescriptionHelpFormatter,
             description=f"{ascii_art}\nQuick ESXi Log Parser parses ESXi logs & produces results in csv format",
