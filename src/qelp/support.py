@@ -11,6 +11,7 @@ from typing import Any, Dict, Generator, List, Tuple
 import argparse
 from collections import defaultdict, namedtuple
 import art
+from colorama import init, Fore
 from concurrent.futures import ThreadPoolExecutor
 from .local_logger import logger
 
