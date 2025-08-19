@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "QELP (Quick ESXi Log Parser) is a Python tool that parses ESXi logs."
 authors = []
 dependencies = [
-    "art>=6.2"
+    "art>=6.2",
     "colorama"
 ]
 readme = "README.md"
@@ -37,4 +37,5 @@ build-onefile = 'scripts.build:main_onefile'
 test-exe = 'scripts.test_executable:main'
 validate-build = 'scripts.validate_build:main'
 clean-build = 'scripts.clean_build:main'
+
 
