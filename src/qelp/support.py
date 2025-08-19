@@ -1,6 +1,7 @@
 import csv
 from datetime import datetime
 import os
+import sys
 import re
 import zipfile
 import tarfile
@@ -11,6 +12,7 @@ from typing import Any, Dict, Generator, List, Tuple
 import argparse
 from collections import defaultdict, namedtuple
 import art
+from colorama import init, Fore
 from concurrent.futures import ThreadPoolExecutor
 from .local_logger import logger
 
@@ -252,17 +254,22 @@ class Configure:
     @staticmethod
     def path(possible_file: str) -> Path:
         return Path(possible_file)
-
+        
     def configure_cli_arguments(self):
-        ascii_art = art.text2art("ESXi_L2C", space=1)
+        ascii_art_main = art.text2art("QELP",chr_ignore=True, space=1)
+        ascii_art_sub = art.text2art("- by Stroz Friedberg",font="slant")
+        ascii_art = f"{Fore.CYAN}{ascii_art_main}\n{Fore.CYAN}{ascii_art_sub}"
+        if '-h' not in sys.argv and '--help' not in sys.argv:
+            print(ascii_art)
+            print()
         parser = argparse.ArgumentParser(
             formatter_class=argparse.RawDescriptionHelpFormatter,
-            description=f"{ascii_art}\nESXi Logs-to-CSV parses triage data from ESXi hosts",
+            description=f"{ascii_art}\nQuick ESXi Log Parser parses ESXi logs & produces results in csv format",
         )
         parser.add_argument(
             "input_dir",
             type=self.path,
-            help="The input directory containing .zip or .tar files",
+            help="The input directory containing .zip, .tar.gz, .tgz, or .tar files",
         )
         parser.add_argument(
             "output_dir",
