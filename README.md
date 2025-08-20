@@ -11,7 +11,7 @@ Installation
     > cd qelp
     > uv sync
 
-    Qelp can also be downlaoded as a standalone binary from Releases section
+    Qelp can also be downloaded as a standalone binary from Releases section
 
 Usage
 ================
@@ -34,5 +34,6 @@ For example, if `C:\ESXi_input_dir` contains an archive named `ESXi_test_log.tgz
 Copyright
 ================
 Copyright 2025, LevelBlue. QELP is licensed under the Apache License, Version 2.0.
+
 
 
