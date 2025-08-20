@@ -18,7 +18,7 @@ Usage
 
     > uv run qelp <path\to\input_directory> <path\to\output_directory>
 
-    If you prefer using compiled binary
+  If you prefer using compiled binary
 
     > qelp.exe <path\to\input_directory> <path\to\output_directory>
 
@@ -34,6 +34,7 @@ For example, if `C:\ESXi_input_dir` contains an archive named `ESXi_test_log.tgz
 Copyright
 ================
 Copyright 2025, LevelBlue. QELP is licensed under the Apache License, Version 2.0.
+
 
 
 
