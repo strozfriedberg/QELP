@@ -11,10 +11,16 @@ Installation
     > cd qelp
     > uv sync
 
+    Qelp can also be downlaoded as a standalone binary from Releases section
+
 Usage
 ================
 
     > uv run qelp <path\to\input_directory> <path\to\output_directory>
+
+    If you prefer using compiled binary
+
+    > qelp.exe <path\to\input_directory> <path\to\output_directory>
 
   Input directory must contain ESXi support or log archives having `zip`, `tar`, `gz`, or `tgz` extensions only.
 
@@ -28,4 +34,5 @@ For example, if `C:\ESXi_input_dir` contains an archive named `ESXi_test_log.tgz
 Copyright
 ================
 Copyright 2025, LevelBlue. QELP is licensed under the Apache License, Version 2.0.
+
 
