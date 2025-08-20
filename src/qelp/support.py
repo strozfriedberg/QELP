@@ -269,7 +269,7 @@ class Configure:
         parser.add_argument(
             "input_dir",
             type=self.path,
-            help="The input directory containing .zip, .tar.gz, .tgz, or .tar files",
+            help="The input directory containing .zip, .tar, .gz, or .tgz files",
         )
         parser.add_argument(
             "output_dir",
