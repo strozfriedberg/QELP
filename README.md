@@ -33,7 +33,8 @@ For example, if `C:\ESXi_input_dir` contains an archive named `ESXi_test_log.tgz
 
 Copyright
 ================
-Copyright 2025, LevelBlue. QELP is licensed under the Apache License, Version 2.0.
+Copyright 2025, Stroz Friedberg, A LevelBlue Company. QELP is licensed under the Apache License, Version 2.0.
+
 
 
 
