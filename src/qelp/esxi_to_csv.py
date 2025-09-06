@@ -54,6 +54,18 @@ LOG_IDENTIFIERS = [
                         ],
                     ),
                     AccessType(
+                        "Failed-Logon",
+                        [
+                            DescriptionHandler(
+                                True,
+                                re.compile(
+                                    r"(SSH login has failed.*)",
+                                re.IGNORECASE,
+                                ),
+                            ),
+                        ],
+                    ),
+                    AccessType(
                         "User_activity",
                         [
                             DescriptionHandler(
@@ -300,7 +312,7 @@ LOG_IDENTIFIERS = [
         [
             ContentPattern(
                 re.compile(
-                    r"(?i)(?P<Timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*?Z) (?P<Log_Level>\w+\(.*?\)|\w+|\w+\(.*?\)\[.*?\]) (esxcli\[.*?\]: |esxcli\[.*?\] |esxcli\[.*?\]:\s\s)(?P<Type>[^:]+):\s*(?P<Description>.*)"
+                    r"(?i)(?P<Timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.*?Z) (?P<Log_Level>\w+\(.*?\)|\w+|\w+\(.*?\)\[.*?\]|esxcli:\s+\w+\s+\[\d+\]) (esxcli\[.*?\]: |esxcli\[.*?\] |esxcli\[.*?\]:\s\s|)(?P<Type>[^:]+|\w+\s+\w+):\s*(?P<Description>.*)"
                 ),
                 [
                     AccessType(
